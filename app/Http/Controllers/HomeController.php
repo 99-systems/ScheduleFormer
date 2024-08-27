@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Cookie\SetCookie;
+use http\Client\Curl\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
@@ -13,6 +15,8 @@ class HomeController extends Controller
      *
      * @return void
      */
+
+    public $temp = false;
     public function __construct()
     {
         $this->middleware('auth');
@@ -26,6 +30,13 @@ class HomeController extends Controller
     public function index()
     {
 
+        $htmlContent = $this->fetchDataFromServer();
+
+        return view('home', compact('htmlContent'));
+    }
+
+    private function fetchDataFromServer()
+    {
         $cookies = Session::get('my_sdu_cookies');
 
         $fetchUrl = 'https://my.sdu.edu.kz/index.php';
@@ -42,26 +53,46 @@ class HomeController extends Controller
             ->asForm()
             ->post($fetchUrl, $fetchData);
 
-        $htmlContent = 'dadas';
         if ($response->successful()) {
             $body = $response->body();
-
-            $body = preg_replace('/^\xEF\xBB\xBF/', '', $body);
+            $body = preg_replace('/^\xEF\xBB\xBF/', '', $body); // Удаление BOM
 
             $result = json_decode($body, true);
 
-//            $htmlContent = $result;
-
             if (isset($result['DATA'])) {
-                $htmlContent = $result['DATA'];
+                return $result['DATA'];
+            } else if(!$this->temp){
+                $this->regenerateStudentSession();
+                return $this->fetchDataFromServer();
+            }
+            return $result['DATA'];
+        }
+
+        return 'Ошибка запроса';
+    }
+
+    public function regenerateStudentSession(){
+        $fetchUrl = 'https://my.sdu.edu.kz/index.php';
+
+
+        $response = Http::withoutVerifying()->asForm()->post($fetchUrl, [
+            'username' => auth()->user()->student_id,
+            'password' => auth()->user()->password,
+            'modstring' => '',
+            'LogIn' => 'Log In'
+        ]);
+
+        $cookieJar = $response->cookies();
+        $cookiesArray = [];
+
+        foreach ($cookieJar as $cookie) {
+            if ($cookie instanceof SetCookie) {
+                $cookiesArray[$cookie->getName()] = $cookie->getValue();
             }
         }
 
-        $cookies = json_encode($cookies);
-        return view('home', compact(['htmlContent','cookies']));
+        Session::put('my_sdu_cookies', $cookiesArray);
+        $this->temp = true;
     }
-
-
-
 
 }

@@ -14,13 +14,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
-Auth::routes();
+//Auth::routes();
+Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::post('/ShowAvailableAllSections', 'App\Http\Controllers\API\ShowAvailableAllSections')->name('home');
-//Route::post('/home', [App\Http\Controllers\HomeController::class, 'show'])->name('home.show');
+Route::post('/ShowAvailableAllSections', 'App\Http\Controllers\API\ShowAvailableAllSections')
+    ->middleware('auth')
+    ->name('home');
+Route::post('/ShowElectiveCoursesByElCode', 'App\Http\Controllers\API\ShowElectiveCoursesByElCode')
+    ->middleware('auth')
+    ->name('home');
 
+//Route::post('/logout', [App\Http\Controllers\Auth\LogoutController::class,'logout'])
+//    ->middleware('guest')
+//    ->name('logout');
 
+//Route::post('/logout')

@@ -3,7 +3,17 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-sm-11 col-md-10 col-lg-8">
+        <div class="col-sm-12 col-md-10 col-lg-8">
+            <div class="card mt-3">
+                <div class="card-header">
+                    <span>Важно!</span>
+                </div>
+                <div class="card-body">
+                    <span>
+                        Этот сайт только для просмотра уроков, учителей, и составить примерно возможное расписание.
+                    </span>
+                </div>
+            </div>
             <div class="ajaxMsjDiv"><span id="ajaxLoading" class="ajaxMsj" style="background-color: rgb(249, 253, 255); color: rgb(0, 128, 192); font-weight: bold; display: none;"></span>&nbsp;</div>
 
             <style>
@@ -15,19 +25,7 @@
                     border-color: #0000BB;
                     background-color: white;
                 }
-                .clTbl {
-                    width: 100%;
-                    /*font-family: arial, sans-serif;*/
-                    border-collapse: collapse;
-                }
-                td.min-width {
-                    width: 1%;
-                    white-space: nowrap;
-                }
 
-                td.equal-width {
-                    width: auto;
-                }
                 .clsTd {
                     border: 1px solid #ddd;
                     padding: 6px 4px;
@@ -122,7 +120,7 @@
 {{--            pointer-events: none;">--}}
 {{--                https://t.me/quota_check--}}
 {{--            </div>--}}
-            <div id="schedulee" class="" style="display: block; width: 100%;">
+            <div id="schedulee">
                 <br>
 
                 <div style="display:flex; justify-content: center; ">
@@ -130,15 +128,15 @@
                 </div>
             <a href="https://t.me/quota_check" class="channel-link" target="_blank">Перейти в канал, там много интереснго и полезного</a>
 
-            <table class="clTbl">
+            <table class="clTbl" width="100%">
                 <tbody><tr>
-                    <td align="center" class="ctg min-width" height="30" style="font-size:12px; font-weight:bold; background-color: #DDF4FF;" width="60">Day/Hour</td>
-                    <td align="center" class="ctg equal-width" style="background-color: #DDF4FF">     <span style="font-size:14px; font-weight:bold; color:black;" title="Monday">Mo</span></td>
-                    <td align="center" class="ctg equal-width" style="background-color: #DDF4FF">     <span style="font-size:14px; font-weight:bold; color:black;" title="Tuesday">Tu</span></td>
-                    <td align="center" class="ctg equal-width" style="background-color: #DDF4FF">     <span style="font-size:14px; font-weight:bold; color:black;" title="Wednesday">We</span></td>
-                    <td align="center" class="ctg equal-width" style="background-color: #DDF4FF">     <span style="font-size:14px; font-weight:bold; color:black;" title="Thursday">Th</span></td>
-                    <td align="center" class="ctg equal-width" style="background-color: #DDF4FF">     <span style="font-size:14px; font-weight:bold; color:black;" title="Friday">Fr</span></td>
-                    <td align="center" class="ctg equal-width" style="background-color: #DDF4FF">     <span style="font-size:14px; font-weight:bold; color:black;" title="Saturday">Sa</span></td>
+                    <td align="center" class="ctg" height="30" style="font-size:12px; font-weight:bold; background-color: #DDF4FF;" width="60">Day/Hour</td>
+                    <td align="center" class="ctg" style="background-color: #DDF4FF" width="15.384615384615%">     <span style="font-size:14px; font-weight:bold; color:black;" title="Monday">Mo</span></td>
+                    <td align="center" class="ctg" style="background-color: #DDF4FF" width="15.384615384615%">     <span style="font-size:14px; font-weight:bold; color:black;" title="Tuesday">Tu</span></td>
+                    <td align="center" class="ctg" style="background-color: #DDF4FF" width="15.384615384615%">     <span style="font-size:14px; font-weight:bold; color:black;" title="Wednesday">We</span></td>
+                    <td align="center" class="ctg" style="background-color: #DDF4FF" width="15.384615384615%">     <span style="font-size:14px; font-weight:bold; color:black;" title="Thursday">Th</span></td>
+                    <td align="center" class="ctg" style="background-color: #DDF4FF" width="15.384615384615%">     <span style="font-size:14px; font-weight:bold; color:black;" title="Friday">Fr</span></td>
+                    <td align="center" class="ctg" style="background-color: #DDF4FF" width="15.384615384615%">     <span style="font-size:14px; font-weight:bold; color:black;" title="Saturday">Sa</span></td>
                 </tr>
                 <tr>
                     <td align="center" class="ctg" height="50" style="background-color: #DDF4FF"><span style="font-weight:bold">08:30</span><br/><span style="color:#999">09:20</span></td>
@@ -268,8 +266,7 @@
                 </tr>
                 </tbody></table>
             </div>
-            <style>
-                .ctg {
+            <style>.ctg {
                     border: 1px solid #FAD163;
                     padding: 2px;
                     margin: 0px;
@@ -301,6 +298,10 @@
     inSchedule["L"] = [];
     var available = true;
 
+
+
+
+    let showingMufSQ = false;
     // function RemoveFromSchedule(type){
     //     if(type == "N"){
     //         for(i = 0; i < inSchedule["N"].length; i++){
@@ -358,7 +359,11 @@
 
         if(res["CODE"] == 1) {
             cnt.innerHTML = res["DATA"];
-            swapShowProg();
+            if(!showingMufSQ){
+                swapShowProg();
+            } else {
+                showingMufSQ = false;
+            }
             if(res["DATA2"] != undefined) sectionsInfo = res["DATA2"];
             // RemoveFromSchedule("N");
         }
@@ -709,6 +714,57 @@
                 bl.innerHTML = ''
             }
         });
+    }
+
+
+    function ShowElectiveCoursesByElCode(prms) {
+
+        prms.object.innerHTML = '<img style="display:inline"  height="12" src="images/loading12.gif" />';
+        periodNo = "";
+        if(prms.period_no != "undefined") periodNo = prms.period_no;
+
+        $.ajax({
+            url: '/ShowElectiveCoursesByElCode',
+            method: 'POST',
+            data: {
+                sentFrom: prms.sentFrom,
+                dk: prms.dersKod,
+                muf_sq_id: prms.muf_sq_id,
+                period_no: periodNo,
+                group_title: prms.group_title,
+                pc: prms.progCode,
+                py: prms.progYear,
+                track: prms.progTrack,
+                ctp: prms.codeType,
+                lg: prms.lgCode,
+                type: prms.type
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                cb_ShowElectiveCoursesByElCode(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Ошибка при выполнении AJAX-запроса:', error);
+            }
+        });
+
+    }
+
+    function cb_ShowElectiveCoursesByElCode(res) {
+
+        var cnt = document.getElementById("divCourseSearchType");
+        cnt.style.display = 'block';
+
+        if(res["CODE"] == 1) {
+            swapShowProg();
+            showingMufSQ = true;
+            cnt.innerHTML = res["DATA"];
+        }
+        else if(res["CODE"] < 0) {
+            alert(res["DATA"]);
+        }
     }
 </script>
 @endsection

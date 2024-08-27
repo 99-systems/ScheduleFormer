@@ -8,22 +8,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 
-class ShowAvailableAllSections extends Controller
+class ShowElectiveCoursesByElCode extends Controller
 {
-    public $temp = false;
 
+    public $temp = false;
     public function __invoke(Request $request)
     {
+        $fetchUrl = 'https://my.sdu.edu.kz/index.php';
         $cookies = Session::get('my_sdu_cookies');
 
-        $fetchUrl = 'https://my.sdu.edu.kz/index.php';
         $fetchData = [
             'ajx' => '1',
             'mod' => 'course_reg',
-            'action' => 'ShowAvailableAllSections',
+            'action' => 'ShowElectiveCoursesByElCode',
+            'sentFrom' => $request->input('sentFrom'),
             'dk' => $request->input('dk'),
+            'muf_sq_id' => $request->input('muf_sq_id'),
+            'period_no' => $request->input('period_no'),
+            'group_title' => $request->input('group_title'),
             'pc' => $request->input('pc'),
             'py' => $request->input('py'),
+            'track' => $request->input('track'),
+            'ctp' => $request->input('ctp'),
+            'lg' => $request->input('lg'),
+            'type' => $request->input('type'),
         ];
 
         $response = Http::withCookies($cookies, 'my.sdu.edu.kz')
@@ -53,6 +61,7 @@ class ShowAvailableAllSections extends Controller
         return response()->json($result);
     }
 
+
     public function regenerateStudentSession(){
         $fetchUrl = 'https://my.sdu.edu.kz/index.php';
 
@@ -77,5 +86,3 @@ class ShowAvailableAllSections extends Controller
         $this->temp = true;
     }
 }
-
-

@@ -61,6 +61,17 @@
                     </form>
                 </div>
             </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <span>Важно!</span>
+                </div>
+                <div class="card-body">
+                    <span>
+                        Этот сайт только для просмотра уроков, учителей, и составить примерно возможное расписание.
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

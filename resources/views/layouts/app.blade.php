@@ -32,6 +32,12 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
+                        @auth
+                            <form action="{{route('logout')}}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-danger">Выйти</button>
+                            </form>
+                        @endauth
                     </ul>
                 </div>
             </div>
