@@ -24,7 +24,7 @@ class ShowAvailableAllSections extends Controller
             'dk' => $request->input('dk'),
             'pc' => $request->input('pc'),
             'py' => $request->input('py'),
-            'track' => $request->input('track'),
+            'track' => 'TRACK0',
             'muf_sq_id' => $request->input('muf_sq_id'),
         ];
 
