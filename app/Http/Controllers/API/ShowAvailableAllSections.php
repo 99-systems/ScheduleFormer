@@ -24,6 +24,8 @@ class ShowAvailableAllSections extends Controller
             'dk' => $request->input('dk'),
             'pc' => $request->input('pc'),
             'py' => $request->input('py'),
+            'track' => $request->input('track'),
+            'muf_sq_id' => $request->input('muf_sq_id'),
         ];
 
         $response = Http::withCookies($cookies, 'my.sdu.edu.kz')
