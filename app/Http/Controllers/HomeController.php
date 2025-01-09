@@ -47,6 +47,7 @@ class HomeController extends Controller
             'mtype' => 'by_prog',
             '1' => '',
         ];
+        set_time_limit(0);
 
         $response = Http::withCookies($cookies, 'my.sdu.edu.kz')
             ->withoutVerifying()

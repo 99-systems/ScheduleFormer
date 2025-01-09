@@ -124,7 +124,15 @@
                 <br>
 
                 <div style="display:flex; justify-content: center; ">
-                    <a href="#" class="button" style="margin: 5px" onclick="clearSched(); return false;">Очистить</a>
+                    <div id="tableContainer" style="display: none;">
+                        <table class="clTbl" id="sectionsTable"  width="100%" border="1">
+                            <!-- Таблица будет заполняться динамически -->
+                        </table>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content: center; ">
+
+                    <a href="#" class="button" style="margin: 5px" onclick="clearSched(); return false;">Очистить всё</a>
                 </div>
             <a href="https://t.me/quota_check" class="channel-link" target="_blank">Перейти в канал, там много интереснго и полезного</a>
 
@@ -297,8 +305,8 @@
     inSchedule["P"] = [];
     inSchedule["L"] = [];
     var available = true;
-
-
+    let uniqid = 0;
+    let addedSections = []
 
 
     let showingMufSQ = false;
@@ -328,7 +336,8 @@
         var data = {
             dk: prms.dersKod,
             pc: prms.progCode,
-            py: prms.progYear
+            py: prms.progYear,
+            progTrack: prms.progTrack
         };
 
         if (prms.sentFrom == 'ProgramByElective') {
@@ -655,20 +664,127 @@
 
 
         sels = [selectedN,selectedP,selectedL]
+        let showLessons = [{
+            type: '',
+            teacher: '',
+            group: '',
+            time: '',
+        },{
+            type: '',
+            teacher: '',
+            group: '',
+            time: '',
+        },{
+            type: '',
+            teacher: '',
+            group: '',
+            time: '',
+        },]
         i=0
         sels.forEach(sel => {
             if(!sel["SID"] || !sectionsInfo[i][sel["SID"]]["SCHEDULE"]){
                 i++
                 return
             }
-            checkk = sectionsInfo[i][sel["SID"]]["SCHEDULE"].split(",")
+
+
+            let chosen =  sectionsInfo[i][sel["SID"]]
+            showLessons[i].type = chosen['TYPE']
+            showLessons[i].teacher = chosen['TEACHER']
+            showLessons[i].group = chosen['SECTION']
+            showLessons[i].time = chosen['SCHEDULE']
+
+
+            let checkk =chosen["SCHEDULE"].split(",")
             checkk.forEach(ccc => {
                 document.getElementById('d'+sel["SID"]+ccc).style.backgroundColor = 'rgba(0, 153, 0, 0.5)';
+                document.getElementById('d'+sel["SID"]+ccc).classList.add('un'+uniqid);
             });
             i++
         });
 
         console.log('sq-' + secSQ, '|L-' + secLab, '|N-' + secNorm, '|P-' + secPrac)
+        console.log(dersKod.value,uniqid,showLessons)
+        addedSections.push({
+            dersKod: dersKod.value,
+            uniqid: uniqid,
+            info:  showLessons
+        })
+        uniqid++;
+        refreshTable()
+    }
+
+
+    function refreshTable() {
+        // Получаем таблицу и её родителя
+        const tableContainer = document.getElementById('tableContainer'); // Контейнер, где расположена таблица
+        const table = document.getElementById('sectionsTable'); // Таблица для отображения данных
+
+        // Очистка таблицы перед заполнением
+        table.innerHTML = '';
+
+        if (addedSections.length === 0) {
+            // Если данных нет, скрываем таблицу
+            tableContainer.style.display = 'none';
+            return;
+        }
+
+        // Если данные есть, показываем таблицу
+        tableContainer.style.display = 'block';
+
+        // Добавляем заголовок таблицы
+        const headerRow = document.createElement('tr');
+        headerRow.innerHTML = `
+        <th class="ctg">DersKod</th>
+<!--        <th class="ctg">Type</th>-->
+<!--        <th class="ctg">Group</th>-->
+        <th class="ctg">Teacher</th>
+        <th class="ctg">Actions</th>
+    `;
+        table.appendChild(headerRow);
+
+        // Заполняем таблицу данными из addedSections
+
+
+        addedSections.forEach(section => {
+            let tchinf = ''
+            section.info.forEach(inf => {
+                if(inf.type === '') return;
+
+                tchinf += inf.type + '|' + inf.group + ': ' + inf.teacher + '\n' ;
+            })
+
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td class="ctg">${section.dersKod}</td>
+<!--            <td>${section.info.group}</td>-->
+            <td class="ctg"><span>
+                   ${tchinf}
+            </span></td>
+            <td class="ctg">
+                <a class="button" onclick="dropSection(${section.uniqid})">Delete</a>
+            </td>
+        `;
+            table.appendChild(row);
+        });
+    }
+
+    // Функция удаления секции
+    function dropSection(uni) {
+        // Удаляем элементы с классом uni
+        document.querySelectorAll(`.un${uni}`).forEach(element => {
+            element.remove();
+        });
+
+        // Удаляем секцию из addedSections
+        const index = addedSections.findIndex(section => section.uniqid === uni);
+        if (index !== -1) {
+            addedSections.splice(index, 1);
+        }
+
+        // Обновляем таблицу
+        refreshTable();
     }
 
 

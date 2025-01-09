@@ -28,6 +28,9 @@ class ShowAvailableAllSections extends Controller
             'muf_sq_id' => $request->input('muf_sq_id'),
         ];
 
+        set_time_limit(0);
+
+
         $response = Http::withCookies($cookies, 'my.sdu.edu.kz')
             ->withoutVerifying()
             ->asForm()
