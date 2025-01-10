@@ -21,12 +21,18 @@ Route::get('/', function () {
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::post('/ShowAvailableAllSections', 'App\Http\Controllers\API\ShowAvailableAllSections')
     ->middleware('auth')
     ->name('home');
+
 Route::post('/ShowElectiveCoursesByElCode', 'App\Http\Controllers\API\ShowElectiveCoursesByElCode')
     ->middleware('auth')
     ->name('home');
+
+
+Route::post('/SearchCourse', 'App\Http\Controllers\API\SearchCourse')
+    ->middleware('auth');
 
 //Route::post('/logout', [App\Http\Controllers\Auth\LogoutController::class,'logout'])
 //    ->middleware('guest')
