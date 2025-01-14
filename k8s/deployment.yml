@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quota-schedule-deployment
+  labels:
+    app: quota-schedule
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: quota-schedule
+    template:
+      metadata:
+        labels:
+          app: quota-schedule
+      spec:
+        containers:
+        - name: quota-schedule
+          image: tikava/laravel-quota-schedule:latest
+          ports:
+          - containerPort: 80
