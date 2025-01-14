@@ -18,4 +18,4 @@ metadata:
         - name: quota-schedule
           image: tikava/laravel-quota-schedule:latest
           ports:
-          - containerPort: 80
+          - containerPort: 8000
