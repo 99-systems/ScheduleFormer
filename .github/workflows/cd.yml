@@ -25,3 +25,5 @@ jobs:
           manifests: |
             k8s/deployment.yml
             k8s/service.yml
+          images: |
+            tikava/laravel-quota-schedule:latest
