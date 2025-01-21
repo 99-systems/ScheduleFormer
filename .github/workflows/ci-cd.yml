@@ -49,6 +49,7 @@ jobs:
         uses: azure/k8s-deploy@v5
         with:
           namespace: default
+          skip-tls-verify: true
           manifests: |
             k8s/deployment.yml
             k8s/service.yml
