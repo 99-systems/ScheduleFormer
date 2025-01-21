@@ -1,13 +1,13 @@
-apiVersion: v1 
+apiVersion: v1
 kind: Service
 metadata:
   name: quota-schedule-service
-  spec:
-    selector:
-      app: quota-schedule
-    ports:
-      - protocol: TCP
-        port: 80
-        targetPort: 8000
-        nodePort: 30000
-    type: NodePort
+spec:
+  selector:
+    app: quota-schedule
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+      nodePort: 30000
+  type: NodePort
