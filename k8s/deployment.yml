@@ -36,7 +36,7 @@ spec:
         - name: APP_DEBUG
           value: "false"
         - name: APP_URL
-          value: "http://schedule-former.app"
+          value: "http://34.70.163.150:30000"
         - name: LOG_CHANNEL
           value: "stack"
         - name: LOG_DEPRECATIONS_CHANNEL
