@@ -26,3 +26,106 @@ spec:
             cpu: "250m"
         ports:
         - containerPort: 8000
+        env:
+        - name: APP_NAME
+          value: "QuotaSchedule"
+        - name: APP_ENV
+          value: "production"
+        - name: APP_KEY
+          value: "base64:N5OYjrPngrwbRX0FmwlidyEWJnC8mxrBS3NoveUPXVs="
+        - name: APP_DEBUG
+          value: "false"
+        - name: APP_URL
+          value: "http://schedule-former.app"
+        - name: LOG_CHANNEL
+          value: "stack"
+        - name: LOG_DEPRECATIONS_CHANNEL
+          value: "null"
+        - name: LOG_LEVEL
+          value: "debug"
+        - name: DB_CONNECTION
+          value: "pgsql"
+        - name: DB_HOST
+          value: "104.198.206.157"
+        - name: DB_PORT
+          value: "6543"
+        - name: DB_DATABASE
+          value: "laravel"
+        - name: DB_USERNAME
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "postgres"
+        - name: BROADCAST_DRIVER
+          value: "log"
+        - name: CACHE_DRIVER
+          value: "file"
+        - name: FILESYSTEM_DISK
+          value: "local"
+        - name: QUEUE_CONNECTION
+          value: "sync"
+        - name: SESSION_DRIVER
+          value: "file"
+        - name: SESSION_LIFETIME
+          value: "120"
+        - name: MEMCACHED_HOST
+          value: "127.0.0.1"
+        - name: REDIS_HOST
+          value: "127.0.0.1"
+        - name: REDIS_PASSWORD
+          value: "null"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: MAIL_MAILER
+          value: "smtp"
+        - name: MAIL_HOST
+          value: "mailpit"
+        - name: MAIL_PORT
+          value: "1025"
+        - name: MAIL_USERNAME
+          value: "null"
+        - name: MAIL_PASSWORD
+          value: "null"
+        - name: MAIL_ENCRYPTION
+          value: "null"
+        - name: MAIL_FROM_ADDRESS
+          value: "hello@example.com"
+        - name: MAIL_FROM_NAME
+          value: "QuotaSchedule"
+        - name: AWS_ACCESS_KEY_ID
+          value: ""
+        - name: AWS_SECRET_ACCESS_KEY
+          value: ""
+        - name: AWS_DEFAULT_REGION
+          value: "us-east-1"
+        - name: AWS_BUCKET
+          value: ""
+        - name: AWS_USE_PATH_STYLE_ENDPOINT
+          value: "false"
+        - name: PUSHER_APP_ID
+          value: ""
+        - name: PUSHER_APP_KEY
+          value: ""
+        - name: PUSHER_APP_SECRET
+          value: ""
+        - name: PUSHER_HOST
+          value: ""
+        - name: PUSHER_PORT
+          value: "443"
+        - name: PUSHER_SCHEME
+          value: "https"
+        - name: PUSHER_APP_CLUSTER
+          value: "mt1"
+        - name: VITE_APP_NAME
+          value: "QuotaSchedule"
+        - name: VITE_PUSHER_APP_KEY
+          value: ""
+        - name: VITE_PUSHER_HOST
+          value: ""
+        - name: VITE_PUSHER_PORT
+          value: ""
+        - name: VITE_PUSHER_SCHEME
+          value: "https"
+        - name: VITE_PUSHER_APP_CLUSTER
+          value: "mt1"
+        - name: RUN_MIGRATIONS
+          value: "true"
