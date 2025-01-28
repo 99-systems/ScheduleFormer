@@ -34,7 +34,7 @@ spec:
         - name: APP_KEY
           value: "base64:N5OYjrPngrwbRX0FmwlidyEWJnC8mxrBS3NoveUPXVs="
         - name: APP_DEBUG
-          value: "false"
+          value: "true"
         - name: APP_URL
           value: "http://34.70.163.150:30000"
         - name: LOG_CHANNEL
