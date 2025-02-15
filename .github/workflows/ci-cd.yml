@@ -29,13 +29,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: List files for debugging
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "List files:"
-          ls -R
-
       - uses: azure/setup-kubectl@v4
 
       - name: Set Kubernetes context and deploy
