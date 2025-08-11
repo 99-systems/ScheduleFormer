@@ -19,19 +19,25 @@
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
+            <div class="container-fluid px-5">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
 
-                <div class="" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav">
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/home">Уроки</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/reviews">Отзывы об учителях</a>
+                        </li>
+                    @endauth
+                </ul>
 
-                    </ul>
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
+                <div class="d-flex" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
                         @auth
                             <form action="{{route('logout')}}" method="POST">
                                 @csrf

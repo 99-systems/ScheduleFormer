@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Models\Section;
 use GuzzleHttp\Cookie\SetCookie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -17,11 +19,14 @@ class ShowAvailableAllSections extends Controller
         $cookies = Session::get('my_sdu_cookies');
 
         $fetchUrl = 'https://my.sdu.edu.kz/index.php';
+
+        $lessonCode = $request->input('dk');
+
         $fetchData = [
             'ajx' => '1',
             'mod' => 'course_reg',
             'action' => 'ShowAvailableAllSections',
-            'dk' => $request->input('dk'),
+            'dk' => $lessonCode,
             'pc' => $request->input('pc'),
             'py' => $request->input('py'),
             'track' => 'TRACK0',
@@ -47,15 +52,28 @@ class ShowAvailableAllSections extends Controller
 
 
             if (isset($result['DATA'])) {
-                $htmlContent =  ['DATA'];
+                $htmlContent = $result['DATA'];
             }
             else if(!$this->temp){
                 $this->regenerateStudentSession();
                 return $this->__invoke($request);
             }
+
+            if ($result['CODE'] == "1"){
+                $sections = Course::where('code', $lessonCode)
+                    ->with(['sections' => function ($query) {
+                        $query->orderBy('section_code');
+                    }])
+                    ->get();
+
+                $pairs = $sections
+                    ->flatMap(function ($course) {
+                        return $course->sections->pluck('room', 'section_code');
+                    });
+            }
         }
 
-        return response()->json($result);
+        return response()->json(['sections' => $result, 'rooms' => $pairs ?? []]);
     }
 
     public function regenerateStudentSession(){

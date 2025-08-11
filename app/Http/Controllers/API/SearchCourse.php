@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use GuzzleHttp\Cookie\SetCookie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -15,13 +16,13 @@ class SearchCourse extends Controller
     public function __invoke(Request $request)
     {
         $cookies = Session::get('my_sdu_cookies');
-
+        $lessonCode = $request->input('dk');
         $fetchUrl = 'https://my.sdu.edu.kz/index.php';
         $fetchData = [
             'ajx' => '1',
             'mod' => 'course_reg',
             'action' => 'SearchCourse',
-            'dk' => $request->input('dk'),
+            'dk' => $lessonCode,
             'track' => 'TRACK0',
         ];
 
@@ -47,9 +48,22 @@ class SearchCourse extends Controller
                 $this->regenerateStudentSession();
                 return $this->__invoke($request);
             }
+
+            if ($result['CODE'] == "1"){
+                $sections = Course::where('code', $lessonCode)
+                    ->with(['sections' => function ($query) {
+                        $query->orderBy('section_code');
+                    }])
+                    ->get();
+
+                $pairs = $sections
+                    ->flatMap(function ($course) {
+                        return $course->sections->pluck('room', 'section_code');
+                    });
+            }
         }
 
-        return response()->json($result);
+        return response()->json(['sections' => $result, 'rooms' => $pairs ?? []]);
     }
 
     public function regenerateStudentSession(){

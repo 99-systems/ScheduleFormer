@@ -35,6 +35,21 @@ return [
 
     'connections' => [
 
+
+        'pgsql_second' => [
+            'driver' => 'pgsql',
+            'host' => env('DB2_HOST', '127.0.0.1'),
+            'port' => env('DB2_PORT', '5432'),
+            'database' => env('DB2_DATABASE', 'forge'),
+            'username' => env('DB2_USERNAME', 'forge'),
+            'password' => env('DB2_PASSWORD', ''),
+            'charset' => 'utf8', // ✅ для PostgreSQL
+            'prefix' => '',
+            'schema' => 'public', // обычно public
+            'sslmode' => 'prefer',
+        ],
+
+
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),

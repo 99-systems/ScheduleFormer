@@ -106,6 +106,13 @@
 
                 {{--            {{$cookies}}--}}
 
+                <div style="display:flex; justify-content:center; margin-bottom:20px;">
+                    <input class="form-control w-25"  placeholder="MDE 190" id="searchCourseInput">
+                    <button onclick="SearchCourse(document.getElementById('searchCourseInput').value); return false;" class="btn btn-outline-primary ms-3">
+                        Поиск
+                    </button>
+                </div>
+
                 <div style="display:flex; justify-content: center; margin-bottom: 20px">
                     <a href="#" class="button" id="showProgg" style="display: none;"
                        onclick="swapShowProg(); return false;">Показать программу/уроки</a>
@@ -430,14 +437,15 @@
 
                 if (lessn["CODE"] == 1) {
                     let parser = new DOMParser();
-                    htmlcode = parser.parseFromString(lessn["DATA"], 'text/html').body;
+                    let doc = parser.parseFromString(lessn["DATA"], 'text/html');
+                    htmlcode = doc.body; // htmlcode — это теперь Element
                 } else if (lessn["CODE"] < 0) {
                     alert(lessn["DATA"]);
                     return;
                 }
 
-                // Извлечение текста из элемента с классом 'desc' внутри htmlcode.
-                let name = htmlcode.querySelector('div.desc') ? htmlcode.querySelector('div.desc').innerText : 'No description';
+                let descEl = htmlcode.querySelector('div.desc');
+                let name = descEl ? descEl.innerText : 'No description';
 
                 // Добавляем объект в массив lessns
                 lessns.push({
@@ -538,18 +546,60 @@
             cnt.style.display = 'block';
             // HideAjaxLoadImage();
 
-            if (res["CODE"] == 1) {
-                cnt.innerHTML = res["DATA"];
+            const rooms = res['rooms'];
+            const sections = res['sections'];
+
+            if (sections["CODE"] === "1") {
+                cnt.innerHTML = sections["DATA"];
+
+                function addRoomsToTable(tableSelector, headerRowIndex = 0) {
+                    const table = cnt.querySelector(tableSelector);
+                    if (!table) return;
+
+                    // Добавляем заголовок
+                    const headerRow = table.querySelector(`tr:nth-child(${headerRowIndex + 1})`);
+                    const th = document.createElement('th');
+                    th.textContent = 'Room';
+                    th.align = 'center';
+                    th.classList.add('clsTd');
+                    th.style = 'color:#999999; cursor: pointer;';
+                    if(!headerRow) return;
+                    headerRow.appendChild(th);
+
+                    // Заполняем строки
+                    table.querySelectorAll('tr').forEach((tr, index) => {
+                        if (index <= headerRowIndex) return; // пропустить заголовки
+                        const sectionCodeCell = tr.querySelector('td:nth-child(3)');
+                        const sectionTypeCell = tr.querySelector('td:nth-child(4)');
+                        if (!sectionCodeCell || !sectionTypeCell) return;
+
+                        let sectionCode = sectionCodeCell.textContent.trim();
+                        sectionCode = sectionCode.split('.')[1] || sectionCode;
+
+                        const roomName = rooms[`${sectionCode}-${sectionTypeCell.textContent}`] || '-';
+
+                        const td = document.createElement('td');
+                        td.textContent = roomName;
+                        td.classList.add('clsTd');
+                        tr.appendChild(td);
+                    });
+                }
+
+                addRoomsToTable('#tblSections', 0);
+                addRoomsToTable('#plTable', 2);
+
+
+
                 if (showSems) {
                     swapShowProg();
                 } else {
                     showingMufSQ = false;
                 }
                 untoavaible()
-                if (res["DATA2"] != undefined) sectionsInfo = res["DATA2"];
+                if (sections["DATA2"] != undefined) sectionsInfo = sections["DATA2"];
                 // RemoveFromSchedule("N");
-            } else if (res["CODE"] < 0) {
-                alert(res["DATA"]);
+            } else if (sections["CODE"] < 0) {
+                alert(sections["DATA"]);
             }
         }
 
@@ -585,20 +635,69 @@
         function cb_ShowAvailableAllSections(res) {
             var cnt = document.getElementById("divCourseSearchType");
             cnt.style.display = 'block';
-            // HideAjaxLoadImage();
 
-            if (res["CODE"] == 1) {
-                cnt.innerHTML = res["DATA"];
+            const rooms = res['rooms'];
+            const sections = res['sections'];
+
+            if (sections["CODE"] === "1") {
+                cnt.innerHTML = sections["DATA"];
+
+                function addRoomsToTable(tableSelector, headerRowIndex = 0) {
+                    const table = cnt.querySelector(tableSelector);
+                    if (!table) return;
+
+                    // Добавляем заголовок
+                    const headerRow = table.querySelector(`tr:nth-child(${headerRowIndex + 1})`);
+                    const th = document.createElement('th');
+                    th.textContent = 'Room';
+                    th.align = 'center';
+                    th.classList.add('clsTd');
+                    th.style = 'color:#999999; cursor: pointer;';
+                    if(!headerRow) return;
+                    headerRow.appendChild(th);
+
+                    // Заполняем строки
+                    table.querySelectorAll('tr').forEach((tr, index) => {
+                        if (index <= headerRowIndex) return; // пропустить заголовки
+                        const sectionCodeCell = tr.querySelector('td:nth-child(3)');
+                        const sectionTypeCell = tr.querySelector('td:nth-child(4)');
+                        if (!sectionCodeCell || !sectionTypeCell) return;
+
+                        let sectionCode = sectionCodeCell.textContent.trim();
+                        sectionCode = sectionCode.split('.')[1] || sectionCode;
+
+                        const roomName = rooms[`${sectionCode}-${sectionTypeCell.textContent}`] || '-';
+
+                        const td = document.createElement('td');
+                        td.textContent = roomName;
+                        td.classList.add('clsTd');
+                        tr.appendChild(td);
+                    });
+                }
+
+                addRoomsToTable('#tblSections', 0);
+                addRoomsToTable('#plTable', 2);
+
+
+
+
+
+
+
+
+
+
+
                 if (showSems) {
                     swapShowProg();
                 } else {
                     showingMufSQ = false;
                 }
                 untoavaible()
-                if (res["DATA2"] != undefined) sectionsInfo = res["DATA2"];
+                if (sections["DATA2"] != undefined) sectionsInfo = sections["DATA2"];
                 // RemoveFromSchedule("N");
-            } else if (res["CODE"] < 0) {
-                alert(res["DATA"]);
+            } else if (sections["CODE"] < 0) {
+                alert(sections["DATA"]);
             }
         }
 

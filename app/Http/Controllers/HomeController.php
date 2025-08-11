@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use GuzzleHttp\Cookie\SetCookie;
 use http\Client\Curl\User;
 use Illuminate\Http\Request;
@@ -29,7 +30,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-
         $htmlContent = $this->fetchDataFromServer();
 
         return view('home', compact('htmlContent'));
